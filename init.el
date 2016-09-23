@@ -651,6 +651,22 @@ Has no effect when `persp-show-modestring' is nil."
     (delete 'Git vc-handled-backends))
   (unbind-key "C-w" magit-mode-map))
 
+;; magit file diff
+(defun magit-diff-buffer-file (rev-or-range)
+  "Show changes between commits for current file
+  REV-OR-RANGE should be a range or a single revision.  If it is a
+  revision, then show changes in the working tree relative to that
+  revision.  If it is a range, but one side is omitted, then show
+  changes relative to `HEAD'."
+  (interactive
+   (list (magit-diff-read-range-or-commit "File diff for range" nil current-prefix-arg)))
+  (-if-let (file (magit-file-relative-name))
+      (magit-diff-setup rev-or-range nil magit-diff-arguments (list file))
+    (user-error "Buffer isn't visiting a file")))
+
+(global-set-key (kbd "C-x M-b") 'magit-blame)
+(global-set-key (kbd "C-x v =") 'magit-diff-buffer-file)
+
 (use-package yaml-mode
   :ensure t
   :mode ("\\.ya?ml\\'" . yaml-mode))
@@ -668,6 +684,36 @@ Has no effect when `persp-show-modestring' is nil."
                   web-mode-code-indent-offset 2
                   web-mode-attr-indent-offset 2
                   web-mode-markup-indent-offset 2)))
+
+(add-hook 'typescript-mode-hook
+          (lambda ()
+            (tide-setup)
+            (setq tab-width 2) ;; ~doesn't work
+            (setq c-basic-offset 2) ;; ~doesn't work
+            (setq typescript-indent-level 2) ;; ~this is it
+            (flycheck-mode +1)
+            (setq flycheck-check-syntax-automatically '(save mode-enabled))
+
+            ;; custom key-bindings
+            (local-set-key "\M-r" 'tide-rename-symbol)
+            (local-set-key "\M-p" 'tide-references)
+            (local-set-key "\M-e" 'company-tide)
+
+            (eldoc-mode +1)
+            ;; company is an optional dependency. You have to
+            ;; install it separately via package-install
+            (company-mode-on)
+            ))
+
+;; aligns annotation to the right hand side
+(setq company-tooltip-align-annotations t)
+
+;; formats the buffer before saving
+(add-hook 'before-save-hook 'tide-format-before-save)
+
+;; format options
+(setq tide-format-options '(:insertSpaceAfterFunctionKeywordForAnonymousFunctions t :placeOpenBraceOnNewLineForFunctions nil))
+
 
 (use-package emmet-mode
   :ensure t

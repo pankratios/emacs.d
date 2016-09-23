@@ -60,6 +60,7 @@
 (add-to-list 'load-path (expand-file-name "lisp" user-emacs-directory))
 (require 'tonini-utils)
 (require 'tonini-keybindings)
+(require 'tonini-system)
 
 (defun my-minibuffer-setup-hook ()
   (setq gc-cons-threshold most-positive-fixnum))
@@ -93,7 +94,7 @@
       inhibit-startup-screen t
       echo-keystrokes 0.1
       linum-format " %d"
-      initial-scratch-message "Howdy Sam!\n")
+      initial-scratch-message "Just love you emacs!\n")
 (fset 'yes-or-no-p #'y-or-n-p)
 ;; Opt out from the startup message in the echo area by simply disabling this
 ;; ridiculously bizarre thing entirely.
@@ -166,8 +167,8 @@
   (setq sp-autoskip-closing-pair 'always)
   :bind
   (:map smartparens-mode-map
-	("C-c s u" . sp-unwrap-sexp)
-	("C-c s w" . sp-rewrap-sexp))
+        ("C-c s u" . sp-unwrap-sexp)
+        ("C-c s w" . sp-rewrap-sexp))
   :diminish (smartparens-mode))
 
 (use-package ido
@@ -207,11 +208,12 @@
   (progn
     (delete 'company-dabbrev company-backends)
     (setq company-tooltip-align-annotations t
-	  company-tooltip-minimum-width 27
-	  company-idle-delay 0.3
-	  company-tooltip-limit 10
-	  company-minimum-prefix-length 2
-	  company-tooltip-flip-when-above t))
+          company-tooltip-minimum-width 27
+          company-idle-delay 0.3
+          company-tooltip-limit 10
+          company-minimum-prefix-length 2
+          company-tooltip-flip-when-above t
+          company-require-match nil))
   :bind (:map company-active-map
               ("M-k" . company-select-next)
               ("M-i" . company-select-previous)
@@ -248,15 +250,15 @@
   :config (progn
             (setq helm-buffers-fuzzy-matching t)
             (helm-mode 1)
-	    (setq helm-split-window-in-side-p           t
-		  helm-buffers-fuzzy-matching           t
-		  helm-move-to-line-cycle-in-source     t
-		  helm-ff-search-library-in-sexp        t
-		  helm-ff-file-name-history-use-recentf t
-		  helm-ag-fuzzy-match                   t)
+            (setq helm-split-window-in-side-p           t
+                  helm-buffers-fuzzy-matching           t
+                  helm-move-to-line-cycle-in-source     t
+                  helm-ff-search-library-in-sexp        t
+                  helm-ff-file-name-history-use-recentf t
+                  helm-ag-fuzzy-match                   t)
 
-	    (substitute-key-definition 'find-tag 'helm-etags-select global-map)
-	    (setq projectile-completion-system 'helm))
+            (substitute-key-definition 'find-tag 'helm-etags-select global-map)
+            (setq projectile-completion-system 'helm))
   ;; Display helm buffers always at the bottom
   ;; Source: http://www.lunaryorn.com/2015/04/29/the-power-of-display-buffer-alist.html
   (add-to-list 'display-buffer-alist
@@ -347,10 +349,10 @@
 ;;         ;; Revert Dired buffers, too
 ;;         global-auto-revert-non-file-buffers t)
 
-  ;; (when (eq system-type 'darwin)
-  ;;   ;; File notifications aren't supported on OS X
-  ;;   (setq auto-revert-use-notify nil))
-  ;; :diminish (auto-revert-mode))
+;; (when (eq system-type 'darwin)
+;;   ;; File notifications aren't supported on OS X
+;;   (setq auto-revert-use-notify nil))
+;; :diminish (auto-revert-mode))
 
 (use-package subword                    ; Subword/superword editing
   :defer t
@@ -391,16 +393,16 @@
     "Format the perspective name given by NAME for display in `persp-modestring'."
     (let ((string-name (format "%s" name)))
       (if (equal name (persp-name persp-curr))
-	  (propertize string-name 'face 'persp-selected-face))))
+          (propertize string-name 'face 'persp-selected-face))))
 
   (defun persp-update-modestring ()
     "Update `persp-modestring' to reflect the current perspectives.
 Has no effect when `persp-show-modestring' is nil."
     (when persp-show-modestring
       (setq persp-modestring
-	    (append '("[")
-		    (persp-intersperse (mapcar 'persp-format-name (persp-names)) "")
-		    '("]"))))))
+            (append '("[")
+                    (persp-intersperse (mapcar 'persp-format-name (persp-names)) "")
+                    '("]"))))))
 
 (use-package helm-projectile
   :ensure t
@@ -410,17 +412,17 @@ Has no effect when `persp-show-modestring' is nil."
 (use-package elixir-mode
   :load-path "~/Projects/emacs-elixir/"
   :config (progn
-	    (defun my-elixir-do-end-close-action (id action context)
-	      (when (eq action 'insert)
-		(newline-and-indent)
-		(forward-line -1)
-		(indent-according-to-mode)))
+            (defun my-elixir-do-end-close-action (id action context)
+              (when (eq action 'insert)
+                (newline-and-indent)
+                (forward-line -1)
+                (indent-according-to-mode)))
 
-	    (sp-with-modes '(elixir-mode)
-	      (sp-local-pair "do" "end"
-			     :when '(("SPC" "RET"))
-			     :post-handlers '(:add my-elixir-do-end-close-action)
-			     :actions '(insert)))))
+            (sp-with-modes '(elixir-mode)
+              (sp-local-pair "do" "end"
+                             :when '(("SPC" "RET"))
+                             :post-handlers '(:add my-elixir-do-end-close-action)
+                             :actions '(insert)))))
 
 (use-package yasnippet
   :ensure t
@@ -434,30 +436,30 @@ Has no effect when `persp-show-modestring' is nil."
   :defer 1
   :load-path "~/Projects/alchemist.el/"
   :bind (:map alchemist-iex-mode-map
-	      ("C-d" . windmove-right)
-	 :map alchemist-mode-map
-	      ("M-w" . alchemist-goto-list-symbol-definitions))
+              ("C-d" . windmove-right)
+              :map alchemist-mode-map
+              ("M-w" . alchemist-goto-list-symbol-definitions))
   :config (progn
-	    (setq alchemist-goto-elixir-source-dir "~/Projects/elixir/")
-	    (setq alchemist-goto-erlang-source-dir "~/Projects/otp/")
-	    (defun tonini-alchemist-mode-hook ()
-	      (tester-init-test-run #'alchemist-mix-test-file "_test.exs$")
-	      (tester-init-test-suite-run #'alchemist-mix-test))
+            (setq alchemist-goto-elixir-source-dir "~/Projects/elixir/")
+            (setq alchemist-goto-erlang-source-dir "~/Projects/otp/")
+            (defun tonini-alchemist-mode-hook ()
+              (tester-init-test-run #'alchemist-mix-test-file "_test.exs$")
+              (tester-init-test-suite-run #'alchemist-mix-test))
             (add-hook 'alchemist-mode-hook 'tonini-alchemist-mode-hook)
 
-	    ;; Display alchemist buffers always at the bottom
-	    ;; Source: http://www.lunaryorn.com/2015/04/29/the-power-of-display-buffer-alist.html
-	    (add-to-list 'display-buffer-alist
-			 `(,(rx bos (or "*alchemist test report*"
-					"*alchemist mix*"
-					"*alchemist help*"
-					"*alchemist elixir*"
-					"*alchemist elixirc*"))
-			   (display-buffer-reuse-window
-			    display-buffer-in-side-window)
-			   (reusable-frames . visible)
-			   (side            . right)
-			   (window-width   . 0.5)))))
+            ;; Display alchemist buffers always at the bottom
+            ;; Source: http://www.lunaryorn.com/2015/04/29/the-power-of-display-buffer-alist.html
+            (add-to-list 'display-buffer-alist
+                         `(,(rx bos (or "*alchemist test report*"
+                                        "*alchemist mix*"
+                                        "*alchemist help*"
+                                        "*alchemist elixir*"
+                                        "*alchemist elixirc*"))
+                           (display-buffer-reuse-window
+                            display-buffer-in-side-window)
+                           (reusable-frames . visible)
+                           (side            . right)
+                           (window-width   . 0.5)))))
 
 (use-package erlang
   :ensure t
@@ -503,8 +505,8 @@ Has no effect when `persp-show-modestring' is nil."
   :ensure t
   :defer t
   :init (progn
-	  (setq rbenv-show-active-ruby-in-modeline nil)
-	  (global-rbenv-mode))
+          (setq rbenv-show-active-ruby-in-modeline nil)
+          (global-rbenv-mode))
   :config (progn
             (global-rbenv-mode)
             (add-hook 'enh-ruby-mode-hook 'rbenv-use-corresponding)))
@@ -603,7 +605,7 @@ Has no effect when `persp-show-modestring' is nil."
          ("\\.js.erb\\'" . js2-mode)
          ("\\.jsx\\'" . js2-jsx-mode))
   :bind (:map js2-mode-map
-	      ("M-j" . backward-char))
+              ("M-j" . backward-char))
   :config (setq js2-basic-offset 2))
 
 (use-package typescript-mode
@@ -646,7 +648,8 @@ Has no effect when `persp-show-modestring' is nil."
   :bind (("C-x g" . magit-status))
   :config
   (progn
-    (delete 'Git vc-handled-backends)))
+    (delete 'Git vc-handled-backends))
+  (unbind-key "C-w" magit-mode-map))
 
 (use-package yaml-mode
   :ensure t
@@ -662,12 +665,14 @@ Has no effect when `persp-show-modestring' is nil."
   :config (progn
             (setq web-mode-markup-indent-offset 2
                   web-mode-css-indent-offset 2
-                  web-mode-code-indent-offset 2)))
+                  web-mode-code-indent-offset 2
+                  web-mode-attr-indent-offset 2
+                  web-mode-markup-indent-offset 2)))
 
 (use-package emmet-mode
   :ensure t
   :bind (:map emmet-mode-keymap
-	      ("M-e" . emmet-expand-line))
+              ("M-e" . emmet-expand-line))
   :config (add-hook 'web-mode-hook 'emmet-mode))
 
 (use-package sass-mode

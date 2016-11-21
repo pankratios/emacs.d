@@ -14,7 +14,7 @@
  '(cua-read-only-cursor-color "#859900")
  '(custom-safe-themes
    (quote
-    ("d677ef584c6dfc0697901a44b885cc18e206f05114c8a3b7fde674fce6180879" "8aebf25556399b58091e533e455dd50a6a9cba958cc4ebb0aab175863c25b9a4" "db05a5e4147343b645d8a04124a7ce6d798940c9c0ba07d3a7c7a9000c9670ab" default)))
+    ("8db4b03b9ae654d4a57804286eb3e332725c84d7cdab38463cb6b97d5762ad26" "d677ef584c6dfc0697901a44b885cc18e206f05114c8a3b7fde674fce6180879" "8aebf25556399b58091e533e455dd50a6a9cba958cc4ebb0aab175863c25b9a4" "db05a5e4147343b645d8a04124a7ce6d798940c9c0ba07d3a7c7a9000c9670ab" default)))
  '(fci-rule-color "#073642")
  '(highlight-changes-colors (quote ("#d33682" "#6c71c4")))
  '(highlight-symbol-colors
@@ -39,13 +39,14 @@
  '(hl-fg-colors
    (quote
     ("#002b36" "#002b36" "#002b36" "#002b36" "#002b36" "#002b36" "#002b36" "#002b36")))
+ '(indent-tabs-mode nil)
  '(magit-diff-use-overlays nil)
  '(nrepl-message-colors
    (quote
     ("#dc322f" "#cb4b16" "#b58900" "#546E00" "#B4C342" "#00629D" "#2aa198" "#d33682" "#6c71c4")))
  '(package-selected-packages
    (quote
-    (magit zenburn-theme zen-burn exec-path-from-shell color-theme-sanityinc-solarized emmet-mode default-text-scale yaml-mode whitespace-cleanup-mode which-key web-mode use-package typescript-mode solarized-theme slim-mode sass-mode rubocop rspec-mode rbenv rainbow-mode rainbow-delimiters persp-projectile page-break-lines overseer markdown-mode macrostep karma js2-refactor ibuffer-projectile highlight-numbers helm-swoop helm-projectile helm-flycheck helm-descbinds helm-ag f evil-smartparens erlang enh-ruby-mode elisp-slime-nav drag-stuff company coffee-mode cask-mode beacon ag)))
+    (omnisharp json-mode unbind-key color-theme-solarized tide-mode tide scss-mode js2-mode yasnippet projectile multiple-cursors helm helm-core smartparens magit zenburn-theme zen-burn exec-path-from-shell emmet-mode default-text-scale yaml-mode whitespace-cleanup-mode which-key web-mode use-package typescript-mode slim-mode sass-mode rubocop rspec-mode rbenv rainbow-mode rainbow-delimiters persp-projectile page-break-lines overseer markdown-mode macrostep karma js2-refactor ibuffer-projectile highlight-numbers helm-swoop helm-projectile helm-flycheck helm-descbinds helm-ag f evil-smartparens erlang enh-ruby-mode elisp-slime-nav drag-stuff company coffee-mode cask-mode beacon ag)))
  '(pos-tip-background-color "#073642")
  '(pos-tip-foreground-color "#93a1a1")
  '(projectile-globally-ignored-directories

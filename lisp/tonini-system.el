@@ -70,4 +70,6 @@
 ;; Allow this Emacs process to be a server for client processes.
 (server-start)
 
+;; (setq tide-tsserver-executable "./node_modules/typescript/.bin/tsserver")
+
 (provide 'tonini-system)

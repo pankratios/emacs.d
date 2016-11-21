@@ -94,7 +94,7 @@
       inhibit-startup-screen t
       echo-keystrokes 0.1
       linum-format " %d"
-      initial-scratch-message "Just love you emacs!\n")
+      initial-scratch-message "Welcom on LV-426 ...be careful!:-D\n")
 (fset 'yes-or-no-p #'y-or-n-p)
 ;; Opt out from the startup message in the echo area by simply disabling this
 ;; ridiculously bizarre thing entirely.
@@ -301,6 +301,9 @@
   ;; Also lookup symbols in the Emacs manual
   (add-to-list 'helm-info-default-sources
                'helm-source-info-emacs))
+
+(use-package helm-dash
+  :ensure helm)
 
 (use-package helm-flycheck              ; Helm frontend for Flycheck errors
   :ensure t
@@ -608,6 +611,11 @@ Has no effect when `persp-show-modestring' is nil."
               ("M-j" . backward-char))
   :config (setq js2-basic-offset 2))
 
+(use-package json-mode
+  :ensure t
+  :mode (("\\.json\\'" . json-mode))
+  :config (setq js-indent-level 2))
+
 (use-package typescript-mode
   :ensure t
   :config (setq typescript-indent-level 2))
@@ -715,6 +723,76 @@ Has no effect when `persp-show-modestring' is nil."
 (setq tide-format-options '(:insertSpaceAfterFunctionKeywordForAnonymousFunctions t :placeOpenBraceOnNewLineForFunctions nil))
 
 
+;; (use-package omnisharp
+;;   :ensure t
+;;   :after helm-dash company
+;;   :init
+;;   (setq omnisharp-server-executable-path "/Users/pankratios/code/omnisharp-server/OmniSharp/bin/Debug/OmniSharp.exe")
+;;   :config
+;;   (add-to-list 'company-backends
+;;                'company-omnisharp)
+
+;;   (setq tab-width 2
+;;         c-basic-offset 2
+;;         omnisharp-imenu-support t)
+;;   (add-hook 'csharp-mode-hook
+;;             'omnisharp-mode)
+;;   )
+
+
+;; **** BEGIN omnisharp not working
+;; (require 'omnisharp)
+;; (require helm-dash)
+
+;; (setq omnisharp-server-executable-path
+;;       "/Users/pankratios/code/omnisharp-server/OmniSharp/bin/Debug/OmniSharp.exe")
+
+;; (eval-after-load 'company
+;;   '(add-to-list 'company-backends 'company-omnisharp))
+
+;; (add-hook 'csharp-mode-hook 'omnisharp-mode)
+
+;; (setq omnisharp-imenu-support t)
+
+;; (add-hook 'csharp-mode-hook
+;;           (lambda ()
+;;             (setq-local helm-dash-docsets '("Unity 3D"))
+;;             (setq dash-at-point-docset "unity3d")
+;;             (setq tab-width 2)
+;;             (setq c-basic-offset 2)
+;;             (local-set-key "\M-a" 'helm-M-x)
+;;             (local-set-key "\C-d" 'windmove-right)
+;;             (local-set-key "\M-j" 'backward-char)
+;;             (define-key omnisharp-mode-map (kbd "M-g h") 'helm-dash-at-point)
+;;             (define-key omnisharp-mode-map (kbd "M-r") 'omnisharp-rename)
+;;             (define-key omnisharp-mode-map (kbd "M-g u") 'omnisharp-fix-usings)
+;;             (define-key omnisharp-mode-map (kbd "M-g f") 'omnisharp-find-usages-with-ido)
+;;             (define-key omnisharp-mode-map (kbd "M-g d") 'omnisharp-go-to-definition)
+;;             (define-key omnisharp-mode-map (kbd "M-g RET") 'omnisharp-run-code-action-refactoring)
+;;             (define-key omnisharp-mode-map (kbd "M-g i") 'omnisharp-current-type-information)
+;;             (define-key omnisharp-mode-map (kbd "M-g I") 'omnisharp-current-type-documentation)
+;;             ;;(evil-define-key 'normal omnisharp-mode-map (kbd "g u") 'omnisharp-find-usages)
+;;             ;;(evil-define-key 'normal omnisharp-mode-map (kbd "g I") 'omnisharp-find-implementations) ; g i is taken
+;;             ;;(evil-define-key 'normal omnisharp-mode-map (kbd "g o") 'omnisharp-go-to-definition)
+;;             ;;(evil-define-key 'normal omnisharp-mode-map (kbd "g r") 'omnisharp-run-code-action-refactoring)
+;;             ;;(evil-define-key 'normal omnisharp-mode-map (kbd "g f") 'omnisharp-fix-code-issue-at-point)
+;;             ;;(evil-define-key 'normal omnisharp-mode-map (kbd "g F") 'omnisharp-fix-usings)
+;;             ;;(evil-define-key 'normal omnisharp-mode-map (kbd "g R") 'omnisharp-rename)
+;;             ;;(evil-define-key 'normal omnisharp-mode-map (kbd ", i") 'omnisharp-current-type-information)
+;;             ;;(evil-define-key 'normal omnisharp-mode-map (kbd ", I") 'omnisharp-current-type-documentation)
+;;             ;;(evil-define-key 'insert omnisharp-mode-map (kbd ".") 'omnisharp-add-dot-and-auto-complete)
+;;             ;;(evil-define-key 'normal omnisharp-mode-map (kbd ", n t") 'omnisharp-navigate-to-current-file-member)
+;;             ;;(evil-define-key 'normal omnisharp-mode-map (kbd ", n s") 'omnisharp-navigate-to-solution-member)
+;;             ;;(evil-define-key 'normal omnisharp-mode-map (kbd ", n f") 'omnisharp-navigate-to-solution-file-then-file-member)
+;;             ;;(evil-define-key 'normal omnisharp-mode-map (kbd ", n F") 'omnisharp-navigate-to-solution-file)
+;;             ;;(evil-define-key 'normal omnisharp-mode-map (kbd ", n r") 'omnisharp-navigate-to-region)
+;;             ;;(evil-define-key 'normal omnisharp-mode-map (kbd "<f12>") 'omnisharp-show-last-auto-complete-result)
+;;             ;;(evil-define-key 'insert omnisharp-mode-map (kbd "<f12>") 'omnisharp-show-last-auto-complete-result)
+;;             ;;(evil-define-key 'normal omnisharp-mode-map (kbd ",.") 'omnisharp-show-overloads-at-point)
+;;             ;;(evil-define-key 'normal omnisharp-mode-map (kbd ",rl") 'recompile)
+;;             ))
+;; **** END omnisharp not working
+
 (use-package emmet-mode
   :ensure t
   :bind (:map emmet-mode-keymap
@@ -725,7 +803,9 @@ Has no effect when `persp-show-modestring' is nil."
   :ensure t)
 
 (use-package scss-mode
-  :ensure t)
+  :ensure t
+  :config (progn
+            (setq css-indent-offset 2)))
 
 (use-package whitespace-cleanup-mode
   :ensure t

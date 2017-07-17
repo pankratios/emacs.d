@@ -674,6 +674,7 @@ Has no effect when `persp-show-modestring' is nil."
 
 (global-set-key (kbd "C-x M-b") 'magit-blame)
 (global-set-key (kbd "C-x v =") 'magit-diff-buffer-file)
+(global-set-key (kbd "C-x v g") 'magit-log-buffer-file)
 
 (use-package yaml-mode
   :ensure t
@@ -692,6 +693,11 @@ Has no effect when `persp-show-modestring' is nil."
                   web-mode-code-indent-offset 2
                   web-mode-attr-indent-offset 2
                   web-mode-markup-indent-offset 2)))
+
+(use-package shader-mode
+  :ensure t
+  :config
+  (setq shader-indent-offset 2))
 
 (add-hook 'typescript-mode-hook
           (lambda ()
@@ -713,6 +719,21 @@ Has no effect when `persp-show-modestring' is nil."
             (company-mode-on)
             ))
 
+(defun use-tslint-from-node-modules ()
+  "Use tslint from node_modules directory `use-tslint-from-node-modules'."
+  (let* ((root (locate-dominating-file
+                (or (buffer-file-name) default-directory)
+                "node_modules"))
+         (tslint (and root
+                      (expand-file-name (if (eq system-type 'windows-nt)
+                                            "node_modules/.bin/tslint.cmd"
+                                          "node_modules/.bin/tslint")
+                                        root))))
+    (when (and tslint (file-executable-p tslint))
+      (setq-local flycheck-typescript-tslint-executable tslint))))
+
+(add-hook 'flycheck-mode-hook #'use-tslint-from-node-modules)
+
 ;; aligns annotation to the right hand side
 (setq company-tooltip-align-annotations t)
 
@@ -722,76 +743,18 @@ Has no effect when `persp-show-modestring' is nil."
 ;; format options
 (setq tide-format-options '(:insertSpaceAfterFunctionKeywordForAnonymousFunctions t :placeOpenBraceOnNewLineForFunctions nil))
 
+(setq omnisharp-server-executable-path "/usr/local/bin/omnisharp")
+(add-hook 'csharp-mode-hook 'omnisharp-mode)
+(eval-after-load 'company
+  '(add-to-list 'company-backends 'company-omnisharp))
 
-;; (use-package omnisharp
-;;   :ensure t
-;;   :after helm-dash company
-;;   :init
-;;   (setq omnisharp-server-executable-path "/Users/pankratios/code/omnisharp-server/OmniSharp/bin/Debug/OmniSharp.exe")
-;;   :config
-;;   (add-to-list 'company-backends
-;;                'company-omnisharp)
-
-;;   (setq tab-width 2
-;;         c-basic-offset 2
-;;         omnisharp-imenu-support t)
-;;   (add-hook 'csharp-mode-hook
-;;             'omnisharp-mode)
-;;   )
-
-
-;; **** BEGIN omnisharp not working
-;; (require 'omnisharp)
-;; (require helm-dash)
-
-;; (setq omnisharp-server-executable-path
-;;       "/Users/pankratios/code/omnisharp-server/OmniSharp/bin/Debug/OmniSharp.exe")
-
-;; (eval-after-load 'company
-;;   '(add-to-list 'company-backends 'company-omnisharp))
-
-;; (add-hook 'csharp-mode-hook 'omnisharp-mode)
-
-;; (setq omnisharp-imenu-support t)
-
-;; (add-hook 'csharp-mode-hook
-;;           (lambda ()
-;;             (setq-local helm-dash-docsets '("Unity 3D"))
-;;             (setq dash-at-point-docset "unity3d")
-;;             (setq tab-width 2)
-;;             (setq c-basic-offset 2)
-;;             (local-set-key "\M-a" 'helm-M-x)
-;;             (local-set-key "\C-d" 'windmove-right)
-;;             (local-set-key "\M-j" 'backward-char)
-;;             (define-key omnisharp-mode-map (kbd "M-g h") 'helm-dash-at-point)
-;;             (define-key omnisharp-mode-map (kbd "M-r") 'omnisharp-rename)
-;;             (define-key omnisharp-mode-map (kbd "M-g u") 'omnisharp-fix-usings)
-;;             (define-key omnisharp-mode-map (kbd "M-g f") 'omnisharp-find-usages-with-ido)
-;;             (define-key omnisharp-mode-map (kbd "M-g d") 'omnisharp-go-to-definition)
-;;             (define-key omnisharp-mode-map (kbd "M-g RET") 'omnisharp-run-code-action-refactoring)
-;;             (define-key omnisharp-mode-map (kbd "M-g i") 'omnisharp-current-type-information)
-;;             (define-key omnisharp-mode-map (kbd "M-g I") 'omnisharp-current-type-documentation)
-;;             ;;(evil-define-key 'normal omnisharp-mode-map (kbd "g u") 'omnisharp-find-usages)
-;;             ;;(evil-define-key 'normal omnisharp-mode-map (kbd "g I") 'omnisharp-find-implementations) ; g i is taken
-;;             ;;(evil-define-key 'normal omnisharp-mode-map (kbd "g o") 'omnisharp-go-to-definition)
-;;             ;;(evil-define-key 'normal omnisharp-mode-map (kbd "g r") 'omnisharp-run-code-action-refactoring)
-;;             ;;(evil-define-key 'normal omnisharp-mode-map (kbd "g f") 'omnisharp-fix-code-issue-at-point)
-;;             ;;(evil-define-key 'normal omnisharp-mode-map (kbd "g F") 'omnisharp-fix-usings)
-;;             ;;(evil-define-key 'normal omnisharp-mode-map (kbd "g R") 'omnisharp-rename)
-;;             ;;(evil-define-key 'normal omnisharp-mode-map (kbd ", i") 'omnisharp-current-type-information)
-;;             ;;(evil-define-key 'normal omnisharp-mode-map (kbd ", I") 'omnisharp-current-type-documentation)
-;;             ;;(evil-define-key 'insert omnisharp-mode-map (kbd ".") 'omnisharp-add-dot-and-auto-complete)
-;;             ;;(evil-define-key 'normal omnisharp-mode-map (kbd ", n t") 'omnisharp-navigate-to-current-file-member)
-;;             ;;(evil-define-key 'normal omnisharp-mode-map (kbd ", n s") 'omnisharp-navigate-to-solution-member)
-;;             ;;(evil-define-key 'normal omnisharp-mode-map (kbd ", n f") 'omnisharp-navigate-to-solution-file-then-file-member)
-;;             ;;(evil-define-key 'normal omnisharp-mode-map (kbd ", n F") 'omnisharp-navigate-to-solution-file)
-;;             ;;(evil-define-key 'normal omnisharp-mode-map (kbd ", n r") 'omnisharp-navigate-to-region)
-;;             ;;(evil-define-key 'normal omnisharp-mode-map (kbd "<f12>") 'omnisharp-show-last-auto-complete-result)
-;;             ;;(evil-define-key 'insert omnisharp-mode-map (kbd "<f12>") 'omnisharp-show-last-auto-complete-result)
-;;             ;;(evil-define-key 'normal omnisharp-mode-map (kbd ",.") 'omnisharp-show-overloads-at-point)
-;;             ;;(evil-define-key 'normal omnisharp-mode-map (kbd ",rl") 'recompile)
-;;             ))
-;; **** END omnisharp not working
+(add-hook 'csharp-mode-hook
+          (lambda ()
+            (setq tab-width 2)
+            (setq c-basic-offset 2)
+            (local-set-key "\C-d" 'windmove-right)
+            )
+          )
 
 (use-package emmet-mode
   :ensure t

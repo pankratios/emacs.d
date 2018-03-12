@@ -27,7 +27,10 @@
 
 ;;; Code:
 
-;;; Debugging
+;; Activate? debugger on error
+;; (setq debug-on-error t)
+
+;; Debugging
 (setq message-log-max 10000)
 
 ;; Please don't load outdated byte code
@@ -44,7 +47,7 @@
   (package-refresh-contents)
   (package-install 'use-package))
 
-(require 'diminish)
+;;(require 'diminish)
 (require 'bind-key)
 
 ;; Customization
@@ -228,8 +231,8 @@
   :load-path "~/Projects/tester.el"
   :commands (tester-run-test-file tester-run-test-suite))
 
-(use-package helm-core
-  :ensure t)
+;; (use-package helm-core
+;;   :ensure t)
 (use-package helm
   :ensure t
   :bind (("M-a" . helm-M-x)
@@ -302,8 +305,8 @@
   (add-to-list 'helm-info-default-sources
                'helm-source-info-emacs))
 
-(use-package helm-dash
-  :ensure helm)
+;; (use-package helm-dash
+;;   :ensure helm)
 
 (use-package helm-flycheck              ; Helm frontend for Flycheck errors
   :ensure t
@@ -431,7 +434,10 @@ Has no effect when `persp-show-modestring' is nil."
   :ensure t
   :defer t
   :config
-  (setq yas-snippet-dirs "~/.emacs.d/snippets")
+  (setq yas-snippet-dirs
+        '("~/.emacs.d/snippets"
+          ;; "~/.emacs.d/elpa/yasnippet-snippets-20171001.606/snippets"
+          ))
   (yas-global-mode 1)
   :diminish (yas-minor-mode . " YS"))
 
@@ -699,54 +705,70 @@ Has no effect when `persp-show-modestring' is nil."
   :config
   (setq shader-indent-offset 2))
 
-(add-hook 'typescript-mode-hook
-          (lambda ()
-            (tide-setup)
-            (setq tab-width 2) ;; ~doesn't work
-            (setq c-basic-offset 2) ;; ~doesn't work
-            (setq typescript-indent-level 2) ;; ~this is it
-            (flycheck-mode +1)
-            (setq flycheck-check-syntax-automatically '(save mode-enabled))
+;; (use-package tide-mode)
+;; :ensure t
+;; :config
+;; ()
 
-            ;; custom key-bindings
-            (local-set-key "\M-r" 'tide-rename-symbol)
-            (local-set-key "\M-p" 'tide-references)
-            (local-set-key "\M-e" 'company-tide)
+(defun setup-tide-mode ()
+  (interactive)
+  (tide-setup)
+  (flycheck-mode +1)
+  (setq flycheck-check-syntax-automatically '(save mode-enabled))
+  (eldoc-mode +1)
+  (tide-hl-identifier-mode +1)
 
-            (eldoc-mode +1)
-            ;; company is an optional dependency. You have to
-            ;; install it separately via package-install
-            (company-mode-on)
-            ))
-
-(defun use-tslint-from-node-modules ()
-  "Use tslint from node_modules directory `use-tslint-from-node-modules'."
-  (let* ((root (locate-dominating-file
-                (or (buffer-file-name) default-directory)
-                "node_modules"))
-         (tslint (and root
-                      (expand-file-name (if (eq system-type 'windows-nt)
-                                            "node_modules/.bin/tslint.cmd"
-                                          "node_modules/.bin/tslint")
-                                        root))))
-    (when (and tslint (file-executable-p tslint))
-      (setq-local flycheck-typescript-tslint-executable tslint))))
-
-(add-hook 'flycheck-mode-hook #'use-tslint-from-node-modules)
+  (local-set-key "\M-r" 'tide-rename-symbol)
+  (local-set-key "\M-p" 'tide-references)
+  (local-set-key "\M-e" 'company-tide)
+  (local-set-key "\M-n" 'company-yasnippet)
+  ;; company is an optional dependency. You have to
+  ;; install it separately via package-install
+  ;; `M-x package-install [ret] company`
+  (company-mode +1))
 
 ;; aligns annotation to the right hand side
 (setq company-tooltip-align-annotations t)
 
 ;; formats the buffer before saving
-(add-hook 'before-save-hook 'tide-format-before-save)
+;; (add-hook 'before-save-hook 'tide-format-before-save)
+
+(add-hook 'typescript-mode-hook #'setup-tide-mode)
 
 ;; format options
 (setq tide-format-options '(:insertSpaceAfterFunctionKeywordForAnonymousFunctions t :placeOpenBraceOnNewLineForFunctions nil))
+
+;; tsx support web-mode
+(require 'web-mode)
+(add-to-list 'auto-mode-alist '("\\.tsx\\'" . web-mode))
+(add-hook 'web-mode-hook
+          (lambda ()
+            (when (string-equal "tsx" (file-name-extension buffer-file-name))
+              (setup-tide-mode))))
+
+;; force flycheck to search executable in node_modules
+(eval-after-load 'flycheck-mode
+  '(add-hook 'flycheck-mode-hook #'add-node-modules-path))
+
+;; force prettier to search executable in node_modules
+(require 'prettier-js)
+(eval-after-load 'typescript-mode
+    '(progn
+       (add-hook 'typescript-mode-hook #'add-node-modules-path)
+       (add-hook 'typescript-mode-hook #'prettier-js-mode)))
+
+;; aligns annotation to the right hand side
+(setq company-tooltip-align-annotations t)
 
 (setq omnisharp-server-executable-path "/usr/local/bin/omnisharp")
 (add-hook 'csharp-mode-hook 'omnisharp-mode)
 (eval-after-load 'company
   '(add-to-list 'company-backends 'company-omnisharp))
+
+;; add elm backend to company backends
+(eval-after-load 'company
+  '(add-to-list 'company-backends 'company-elm))
+
 
 (add-hook 'csharp-mode-hook
           (lambda ()

@@ -374,6 +374,12 @@
                     (unless (eq ibuffer-sorting-mode 'alphabetic)
                       (ibuffer-do-sort-by-alphabetic)))))
 
+(use-package add-node-modules-path
+  :ensure t)
+
+(use-package prettier-js
+  :ensure t)
+
 (use-package projectile
   :ensure t
   :bind (("C-x p" . projectile-persp-switch-project))
@@ -626,10 +632,11 @@ Has no effect when `persp-show-modestring' is nil."
   :ensure t
   :config (setq typescript-indent-level 2))
 
-(use-package coffee-mode
-  :ensure t
-  :mode (("\\.coffee\\'" . coffee-mode)
-         ("\\.coffee.erb\\'" . coffee-mode)))
+;; don't use it
+;; (use-package coffee-mode
+;;   :ensure t
+;;   :mode (("\\.coffee\\'" . coffee-mode)
+;;          ("\\.coffee.erb\\'" . coffee-mode)))
 
 (use-package js2-refactor
   :ensure t
@@ -651,6 +658,10 @@ Has no effect when `persp-show-modestring' is nil."
   (global-flycheck-mode 1)
   :diminish (flycheck-mode))
 
+;; force flycheck to search executable in node_modules
+(eval-after-load 'flycheck-mode
+  '(add-hook 'flycheck-mode-hook #'add-node-modules-path))
+
 (use-package drag-stuff
   :ensure t
   :bind (("M-<up>" . drag-stuff-up)
@@ -659,7 +670,10 @@ Has no effect when `persp-show-modestring' is nil."
 (use-package magit
   :ensure t
   :defer 2
-  :bind (("C-x g" . magit-status))
+  :bind (("C-x g" . magit-status)
+         ("C-x M-b" . magit-blame)
+         ("C-x v =" . magit-diff-buffer-file)
+         ("C-x v g" . magit-log-buffer-file))
   :config
   (progn
     (delete 'Git vc-handled-backends))
@@ -677,10 +691,6 @@ Has no effect when `persp-show-modestring' is nil."
   (-if-let (file (magit-file-relative-name))
       (magit-diff-setup rev-or-range nil magit-diff-arguments (list file))
     (user-error "Buffer isn't visiting a file")))
-
-(global-set-key (kbd "C-x M-b") 'magit-blame)
-(global-set-key (kbd "C-x v =") 'magit-diff-buffer-file)
-(global-set-key (kbd "C-x v g") 'magit-log-buffer-file)
 
 (use-package yaml-mode
   :ensure t
@@ -705,11 +715,6 @@ Has no effect when `persp-show-modestring' is nil."
   :config
   (setq shader-indent-offset 2))
 
-;; (use-package tide-mode)
-;; :ensure t
-;; :config
-;; ()
-
 (defun setup-tide-mode ()
   (interactive)
   (tide-setup)
@@ -732,7 +737,6 @@ Has no effect when `persp-show-modestring' is nil."
 
 ;; formats the buffer before saving
 ;; (add-hook 'before-save-hook 'tide-format-before-save)
-
 (add-hook 'typescript-mode-hook #'setup-tide-mode)
 
 ;; format options
@@ -745,10 +749,6 @@ Has no effect when `persp-show-modestring' is nil."
           (lambda ()
             (when (string-equal "tsx" (file-name-extension buffer-file-name))
               (setup-tide-mode))))
-
-;; force flycheck to search executable in node_modules
-(eval-after-load 'flycheck-mode
-  '(add-hook 'flycheck-mode-hook #'add-node-modules-path))
 
 ;; force prettier to search executable in node_modules
 (require 'prettier-js)
@@ -764,10 +764,6 @@ Has no effect when `persp-show-modestring' is nil."
 (add-hook 'csharp-mode-hook 'omnisharp-mode)
 (eval-after-load 'company
   '(add-to-list 'company-backends 'company-omnisharp))
-
-;; add elm backend to company backends
-(eval-after-load 'company
-  '(add-to-list 'company-backends 'company-elm))
 
 
 (add-hook 'csharp-mode-hook
@@ -792,6 +788,9 @@ Has no effect when `persp-show-modestring' is nil."
   :config (progn
             (setq css-indent-offset 2)))
 
+(use-package stylus-mode
+  :ensure t)
+
 (use-package whitespace-cleanup-mode
   :ensure t
   :bind (("C-c t c" . whitespace-cleanup-mode)
@@ -803,6 +802,16 @@ Has no effect when `persp-show-modestring' is nil."
 (use-package markdown-mode
   :ensure t
   :mode ("\\.md\\'" . markdown-mode))
+
+(use-package elm-mode
+  :ensure t
+  :bind (:map elm-mode-map
+              ("C-c i" . elm-mode-format-buffer)))
+
+;; add elm backend to company backends
+(eval-after-load 'company
+  '(add-to-list 'company-backends 'company-elm))
+
 
 (provide 'init)
 

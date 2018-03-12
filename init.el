@@ -62,6 +62,7 @@
 
 (add-to-list 'load-path (expand-file-name "lisp" user-emacs-directory))
 (require 'tonini-utils)
+(require 'pankratios-utils)
 (require 'tonini-keybindings)
 (require 'tonini-system)
 
@@ -679,19 +680,6 @@ Has no effect when `persp-show-modestring' is nil."
     (delete 'Git vc-handled-backends))
   (unbind-key "C-w" magit-mode-map))
 
-;; magit file diff
-(defun magit-diff-buffer-file (rev-or-range)
-  "Show changes between commits for current file
-  REV-OR-RANGE should be a range or a single revision.  If it is a
-  revision, then show changes in the working tree relative to that
-  revision.  If it is a range, but one side is omitted, then show
-  changes relative to `HEAD'."
-  (interactive
-   (list (magit-diff-read-range-or-commit "File diff for range" nil current-prefix-arg)))
-  (-if-let (file (magit-file-relative-name))
-      (magit-diff-setup rev-or-range nil magit-diff-arguments (list file))
-    (user-error "Buffer isn't visiting a file")))
-
 (use-package yaml-mode
   :ensure t
   :mode ("\\.ya?ml\\'" . yaml-mode))
@@ -715,34 +703,16 @@ Has no effect when `persp-show-modestring' is nil."
   :config
   (setq shader-indent-offset 2))
 
-(defun setup-tide-mode ()
-  (interactive)
-  (tide-setup)
-  (flycheck-mode +1)
-  (setq flycheck-check-syntax-automatically '(save mode-enabled))
-  (eldoc-mode +1)
-  (tide-hl-identifier-mode +1)
-
-  (local-set-key "\M-r" 'tide-rename-symbol)
-  (local-set-key "\M-p" 'tide-references)
-  (local-set-key "\M-e" 'company-tide)
-  (local-set-key "\M-n" 'company-yasnippet)
-  ;; company is an optional dependency. You have to
-  ;; install it separately via package-install
-  ;; `M-x package-install [ret] company`
-  (company-mode +1))
-
+;;; tide-mode related
 ;; aligns annotation to the right hand side
 (setq company-tooltip-align-annotations t)
-
 ;; formats the buffer before saving
 ;; (add-hook 'before-save-hook 'tide-format-before-save)
 (add-hook 'typescript-mode-hook #'setup-tide-mode)
-
 ;; format options
 (setq tide-format-options '(:insertSpaceAfterFunctionKeywordForAnonymousFunctions t :placeOpenBraceOnNewLineForFunctions nil))
 
-;; tsx support web-mode
+;; tsx support web-mode => use use-package instead
 (require 'web-mode)
 (add-to-list 'auto-mode-alist '("\\.tsx\\'" . web-mode))
 (add-hook 'web-mode-hook
@@ -750,7 +720,7 @@ Has no effect when `persp-show-modestring' is nil."
             (when (string-equal "tsx" (file-name-extension buffer-file-name))
               (setup-tide-mode))))
 
-;; force prettier to search executable in node_modules
+;; force prettier to search executable in node_modules => use use-package instead
 (require 'prettier-js)
 (eval-after-load 'typescript-mode
     '(progn
@@ -760,12 +730,13 @@ Has no effect when `persp-show-modestring' is nil."
 ;; aligns annotation to the right hand side
 (setq company-tooltip-align-annotations t)
 
+;;; omnisharp => use use-package instead
 (setq omnisharp-server-executable-path "/usr/local/bin/omnisharp")
 (add-hook 'csharp-mode-hook 'omnisharp-mode)
 (eval-after-load 'company
   '(add-to-list 'company-backends 'company-omnisharp))
 
-
+;;; csharp-mode config => use use-package instead
 (add-hook 'csharp-mode-hook
           (lambda ()
             (setq tab-width 2)
@@ -802,6 +773,10 @@ Has no effect when `persp-show-modestring' is nil."
 (use-package markdown-mode
   :ensure t
   :mode ("\\.md\\'" . markdown-mode))
+
+;; required ny elm-mode
+(use-package dash
+  :ensure t)
 
 (use-package elm-mode
   :ensure t

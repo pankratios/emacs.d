@@ -217,7 +217,9 @@
           company-tooltip-limit 10
           company-minimum-prefix-length 2
           company-tooltip-flip-when-above t
-          company-require-match nil))
+          company-require-match nil)
+    ;; add elm backend to company backends
+    (add-to-list 'company-backends 'company-elm))
   :bind (:map company-active-map
               ("M-k" . company-select-next)
               ("M-i" . company-select-previous)
@@ -376,10 +378,12 @@
                       (ibuffer-do-sort-by-alphabetic)))))
 
 (use-package add-node-modules-path
-  :ensure t)
+  :ensure t
+  :hook (typescript-mode flycheck-mode))
 
 (use-package prettier-js
-  :ensure t)
+  :ensure t
+  :hook (typescript-mode . prettier-js-mode))
 
 (use-package projectile
   :ensure t
@@ -633,12 +637,6 @@ Has no effect when `persp-show-modestring' is nil."
   :ensure t
   :config (setq typescript-indent-level 2))
 
-;; don't use it
-;; (use-package coffee-mode
-;;   :ensure t
-;;   :mode (("\\.coffee\\'" . coffee-mode)
-;;          ("\\.coffee.erb\\'" . coffee-mode)))
-
 (use-package js2-refactor
   :ensure t
   :after js2-mode
@@ -658,10 +656,6 @@ Has no effect when `persp-show-modestring' is nil."
   :config
   (global-flycheck-mode 1)
   :diminish (flycheck-mode))
-
-;; force flycheck to search executable in node_modules
-(eval-after-load 'flycheck-mode
-  '(add-hook 'flycheck-mode-hook #'add-node-modules-path))
 
 (use-package drag-stuff
   :ensure t
@@ -690,60 +684,27 @@ Has no effect when `persp-show-modestring' is nil."
          ("\\.mustache\\'" . web-mode)
          ("\\.html?\\'" . web-mode)
          ("\\.eex\\'" . web-mode)
-         ("\\.php\\'" . web-mode))
+         ("\\.php\\'" . web-mode)
+         ("\\.tsx\\'" . web-mode))
   :config (progn
             (setq web-mode-markup-indent-offset 2
                   web-mode-css-indent-offset 2
                   web-mode-code-indent-offset 2
                   web-mode-attr-indent-offset 2
-                  web-mode-markup-indent-offset 2)))
+                  web-mode-markup-indent-offset 2
+                  ;; web-mode-enable-css-colorization t
+                  ;; setq web-mode-style-padding 2
+                  ;; setq web-mode-script-padding 2
+                  )
+            (add-hook 'web-mode-hook
+                      (lambda ()
+                        (when (string-equal "tsx" (file-name-extension buffer-file-name))
+                          (setup-tide-mode))))))
 
 (use-package shader-mode
   :ensure t
   :config
   (setq shader-indent-offset 2))
-
-;;; tide-mode related
-;; aligns annotation to the right hand side
-(setq company-tooltip-align-annotations t)
-;; formats the buffer before saving
-;; (add-hook 'before-save-hook 'tide-format-before-save)
-(add-hook 'typescript-mode-hook #'setup-tide-mode)
-;; format options
-(setq tide-format-options '(:insertSpaceAfterFunctionKeywordForAnonymousFunctions t :placeOpenBraceOnNewLineForFunctions nil))
-
-;; tsx support web-mode => use use-package instead
-(require 'web-mode)
-(add-to-list 'auto-mode-alist '("\\.tsx\\'" . web-mode))
-(add-hook 'web-mode-hook
-          (lambda ()
-            (when (string-equal "tsx" (file-name-extension buffer-file-name))
-              (setup-tide-mode))))
-
-;; force prettier to search executable in node_modules => use use-package instead
-(require 'prettier-js)
-(eval-after-load 'typescript-mode
-    '(progn
-       (add-hook 'typescript-mode-hook #'add-node-modules-path)
-       (add-hook 'typescript-mode-hook #'prettier-js-mode)))
-
-;; aligns annotation to the right hand side
-(setq company-tooltip-align-annotations t)
-
-;;; omnisharp => use use-package instead
-(setq omnisharp-server-executable-path "/usr/local/bin/omnisharp")
-(add-hook 'csharp-mode-hook 'omnisharp-mode)
-(eval-after-load 'company
-  '(add-to-list 'company-backends 'company-omnisharp))
-
-;;; csharp-mode config => use use-package instead
-(add-hook 'csharp-mode-hook
-          (lambda ()
-            (setq tab-width 2)
-            (setq c-basic-offset 2)
-            (local-set-key "\C-d" 'windmove-right)
-            )
-          )
 
 (use-package emmet-mode
   :ensure t
@@ -783,10 +744,33 @@ Has no effect when `persp-show-modestring' is nil."
   :bind (:map elm-mode-map
               ("C-c i" . elm-mode-format-buffer)))
 
-;; add elm backend to company backends
-(eval-after-load 'company
-  '(add-to-list 'company-backends 'company-elm))
+(use-package tide
+  :ensure t
+  :config (progn
+            (;; aligns annotation to the right hand side
+             setq company-tooltip-align-annotations t
+                  tide-format-options '(:insertSpaceAfterFunctionKeywordForAnonymousFunctions t :placeOpenBraceOnNewLineForFunctions nil))
+            )
+  :hook ((typescript-mode . setup-tide-mode)
+         ;; formats the buffer before saving
+         ;; (before-save . tide-format-before-save)
+         )
+  )
 
+;;; omnisharp => use use-package instead
+;; (setq omnisharp-server-executable-path "/usr/local/bin/omnisharp")
+;; (add-hook 'csharp-mode-hook 'omnisharp-mode)
+;; (eval-after-load 'company
+;;   '(add-to-list 'company-backends 'company-omnisharp))
+
+;; ;;; csharp-mode config => use use-package instead
+;; (add-hook 'csharp-mode-hook
+;;           (lambda ()
+;;             (setq tab-width 2)
+;;             (setq c-basic-offset 2)
+;;             (local-set-key "\C-d" 'windmove-right)
+;;             )
+;;           )
 
 (provide 'init)
 

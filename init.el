@@ -47,7 +47,7 @@
   (package-refresh-contents)
   (package-install 'use-package))
 
-;;(require 'diminish)
+(require 'diminish)
 (require 'bind-key)
 
 ;; Customization
@@ -427,6 +427,7 @@ Has no effect when `persp-show-modestring' is nil."
   (helm-projectile-on))
 
 (use-package elixir-mode
+  :ensure t
   :load-path "~/Projects/emacs-elixir/"
   :config (progn
             (defun my-elixir-do-end-close-action (id action context)

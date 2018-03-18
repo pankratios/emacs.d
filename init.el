@@ -112,11 +112,13 @@
                     :family "Fira Sans" :height 140 :weight 'regular)
 
 (set-frame-parameter nil 'fullscreen 'fullboth)
+(set-frame-parameter nil 'background-mode 'dark)
+(set-terminal-parameter nil 'background-mode 'dark)
 
 (add-to-list 'initial-frame-alist '(fullscreen . maximized))
 
 (add-to-list 'custom-theme-load-path "~/.emacs.d/themes/")
-(load-theme 'ujelly t)
+(load-theme 'solarized t)
 
 ;; utf-8 all the things
 (set-terminal-coding-system 'utf-8)
@@ -234,8 +236,6 @@
   :load-path "~/Projects/tester.el"
   :commands (tester-run-test-file tester-run-test-suite))
 
-;; (use-package helm-core
-;;   :ensure t)
 (use-package helm
   :ensure t
   :bind (("M-a" . helm-M-x)
@@ -308,8 +308,8 @@
   (add-to-list 'helm-info-default-sources
                'helm-source-info-emacs))
 
-;; (use-package helm-dash
-;;   :ensure helm)
+(use-package helm-dash
+  :ensure t)
 
 (use-package helm-flycheck              ; Helm frontend for Flycheck errors
   :ensure t

@@ -42,17 +42,6 @@
 
 (setq ring-bell-function 'ignore)
 
-(defun duplicate-line()
-  (interactive)
-  (move-beginning-of-line 1)
-  (kill-line)
-  (yank)
-  (open-line 1)
-  (forward-line 1)
-  (yank)
-  )
-(global-set-key (kbd "M-RET") 'duplicate-line)
-
 (defun copy-from-osx ()
   (shell-command-to-string "pbpaste"))
 
@@ -69,7 +58,5 @@
 
 ;; Allow this Emacs process to be a server for client processes.
 (server-start)
-
-;; (setq tide-tsserver-executable "./node_modules/typescript/.bin/tsserver")
 
 (provide 'tonini-system)

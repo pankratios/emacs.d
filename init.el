@@ -64,6 +64,7 @@
 (require 'tonini-utils)
 (require 'pankratios-utils)
 (require 'tonini-keybindings)
+(require 'pankratios-keybindings)
 (require 'tonini-system)
 
 (defun my-minibuffer-setup-hook ()
@@ -219,9 +220,7 @@
           company-tooltip-limit 10
           company-minimum-prefix-length 2
           company-tooltip-flip-when-above t
-          company-require-match nil)
-    ;; add elm backend to company backends
-    (add-to-list 'company-backends 'company-elm))
+          company-require-match nil))
   :bind (:map company-active-map
               ("M-k" . company-select-next)
               ("M-i" . company-select-previous)
@@ -243,16 +242,16 @@
          ("C-x f" . helm-recentf)
          ("C-SPC" . helm-dabbrev)
          ("M-y" . helm-show-kill-ring)
-         ("C-x b" . helm-buffers-list))
-  :bind (:map helm-map
-              ("M-i" . helm-previous-line)
-              ("M-k" . helm-next-line)
-              ("M-I" . helm-previous-page)
-              ("M-K" . helm-next-page)
-              ("M-h" . helm-beginning-of-buffer)
-              ("M-H" . helm-end-of-buffer)
-              ("<tab>" . helm-execute-persistent-action)
-              ("C-i" . helm-execute-persistent-action))
+         ("C-x b" . helm-buffers-list)
+         :map helm-map
+         ("M-i" . helm-previous-line)
+         ("M-k" . helm-next-line)
+         ("M-I" . helm-previous-page)
+         ("M-K" . helm-next-page)
+         ("M-h" . helm-beginning-of-buffer)
+         ("M-H" . helm-end-of-buffer)
+         ("<tab>" . helm-execute-persistent-action)
+         ("C-i" . helm-execute-persistent-action))
   :config (progn
             (setq helm-buffers-fuzzy-matching t)
             (helm-mode 1)
@@ -423,8 +422,9 @@ Has no effect when `persp-show-modestring' is nil."
 
 (use-package helm-projectile
   :ensure t
-  :config
-  (helm-projectile-on))
+  ;; :config
+  ;; (helm-projectile-on)
+  )
 
 (use-package elixir-mode
   :ensure t
@@ -743,7 +743,12 @@ Has no effect when `persp-show-modestring' is nil."
 (use-package elm-mode
   :ensure t
   :bind (:map elm-mode-map
-              ("C-c i" . elm-mode-format-buffer)))
+              ("C-c i" . elm-mode-format-buffer))
+  :config (progn
+            ;; add elm backend to company backends
+            (add-to-list 'company-backends 'company-elm))
+  :requires company
+  )
 
 (use-package tide
   :ensure t
@@ -758,20 +763,23 @@ Has no effect when `persp-show-modestring' is nil."
          )
   )
 
-;;; omnisharp => use use-package instead
-;; (setq omnisharp-server-executable-path "/usr/local/bin/omnisharp")
-;; (add-hook 'csharp-mode-hook 'omnisharp-mode)
-;; (eval-after-load 'company
-;;   '(add-to-list 'company-backends 'company-omnisharp))
+(use-package csharp-mode
+  :ensure t
+  :bind (:map csharp-mode-map
+              ("C-d" . windmove-right)
+              ("M-j" . backward-char)
+              ))
 
-;; ;;; csharp-mode config => use use-package instead
-;; (add-hook 'csharp-mode-hook
-;;           (lambda ()
-;;             (setq tab-width 2)
-;;             (setq c-basic-offset 2)
-;;             (local-set-key "\C-d" 'windmove-right)
-;;             )
-;;           )
+(use-package omnisharp
+  :ensure t
+  :config (progn
+            (setq omnisharp-server-executable-path "/usr/local/bin/omnisharp")
+            (add-to-list 'company-backends 'company-omnisharp))
+  :hook ((csharp-mode . omnisharp-mode)
+         (csharp-mode . company-mode)
+         (csharp-mode . flycheck-mode))
+  :requires (csharp-mode company flycheck)
+  )
 
 (provide 'init)
 

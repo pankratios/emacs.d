@@ -1,7 +1,11 @@
 ;;; pankratios-utils --- extension
+
 ;;; Commentary:
 ;; Just some neat utils
-(require 'magit)
+
+;;; Code:
+
+;; (require 'magit)
 (require 'tide)
 
 ;; magit file diff function
@@ -34,6 +38,16 @@
   ;; install it separately via package-install
   ;; `M-x package-install [ret] company`
   (company-mode +1))
+
+(defun duplicate-line()
+  (interactive)
+  (move-beginning-of-line 1)
+  (kill-line)
+  (yank)
+  (open-line 1)
+  (forward-line 1)
+  (yank)
+  )
 
 (provide 'pankratios-utils)
 ;;; pankratios-utils.el ends here

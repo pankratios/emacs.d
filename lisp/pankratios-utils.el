@@ -22,22 +22,17 @@
 ;;     (user-error "Buffer isn't visiting a file")))
 
 ;; tide-mode setup function
-(defun setup-tide-mode ()
-  (interactive)
-  (tide-setup)
-  (flycheck-mode +1)
-  (setq flycheck-check-syntax-automatically '(save mode-enabled))
-  (eldoc-mode +1)
-  (tide-hl-identifier-mode +1)
-
-  (local-set-key "\M-r" 'tide-rename-symbol)
-  (local-set-key "\M-p" 'tide-references)
-  (local-set-key "\M-e" 'company-tide)
-  (local-set-key "\M-n" 'company-yasnippet)
-  ;; company is an optional dependency. You have to
-  ;; install it separately via package-install
-  ;; `M-x package-install [ret] company`
-  (company-mode +1))
+;; (defun setup-tide-mode ()
+;;   (interactive)
+;;   (tide-setup)
+;;   (flycheck-mode +1)
+;;   (setq flycheck-check-syntax-automatically '(save mode-enabled))
+;;   (eldoc-mode +1)
+;;   (tide-hl-identifier-mode +1)
+;;   ;; company is an optional dependency. You have to
+;;   ;; install it separately via package-install
+;;   ;; `M-x package-install [ret] company`
+;;   (company-mode +1))
 
 (defun duplicate-line()
   (interactive)

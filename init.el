@@ -718,8 +718,7 @@ Has no effect when `persp-show-modestring' is nil."
 
 (use-package scss-mode
   :ensure t
-  :config (progn
-            (setq css-indent-offset 2)))
+  :config (setq css-indent-offset 2))
 
 (use-package stylus-mode
   :ensure t)
@@ -736,31 +735,45 @@ Has no effect when `persp-show-modestring' is nil."
   :ensure t
   :mode ("\\.md\\'" . markdown-mode))
 
-;; required ny elm-mode
+;; required by elm-mode
 (use-package dash
   :ensure t)
 
 (use-package elm-mode
   :ensure t
   :bind (:map elm-mode-map
-              ("C-c i" . elm-mode-format-buffer))
+              ("C-c i" . elm-mode-format-buffer)
+              ("M-'" . elm-oracle-doc-at-point))
   :config (progn
-            ;; add elm backend to company backends
+            (setq elm-tags-on-save t
+                  elm-format-on-save t
+                  elm-sort-imports-on-save t)
             (add-to-list 'company-backends 'company-elm))
   :after (company dash)
   )
 
+;; https://www.reddit.com/r/emacs/comments/6w67te/tide_questions_regarding_usepackage/
 (use-package tide
   :ensure t
+  :bind (:map tide-mode-map
+              ("M-r" . tide-rename-symbol)
+              ("M-p" . tide-references)
+              ("M-'" . tide-documentation-at-point)
+              ("M-e" . company-tide)
+              ("M-n" . company-yasnippet))
   :config (progn
-            (;; aligns annotation to the right hand side
+            (
              setq company-tooltip-align-annotations t
-                  tide-format-options '(:insertSpaceAfterFunctionKeywordForAnonymousFunctions t :placeOpenBraceOnNewLineForFunctions nil))
-            )
-  :hook ((typescript-mode . setup-tide-mode)
-         ;; formats the buffer before saving
-         ;; (before-save . tide-format-before-save)
-         )
+                  tide-format-options '(:insertSpaceAfterFunctionKeywordForAnonymousFunctions t :placeOpenBraceOnNewLineForFunctions nil)))
+  :hook (
+         ;; overrides prettier-js formatting (before-save . tide-format-before-save)
+         (typescript-mode . (lambda()
+                              (flycheck-mode +1)
+                              (setq flycheck-check-syntax-automatically '(save mode-enabled))
+                              (tide-setup)
+                              (eldoc-mode +1)
+                              (tide-hl-identifier-mode +1)
+                              (company-mode +1))))
   :after (company typescript-mode)
   )
 

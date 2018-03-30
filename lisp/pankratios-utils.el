@@ -6,7 +6,6 @@
 ;;; Code:
 
 ;; (require 'magit)
-(require 'tide)
 
 ;; magit file diff function
 ;; (defun magit-diff-buffer-file (rev-or-range)
@@ -20,19 +19,6 @@
 ;;   (-if-let (file (magit-file-relative-name))
 ;;       (magit-diff-setup rev-or-range nil magit-diff-arguments (list file))
 ;;     (user-error "Buffer isn't visiting a file")))
-
-;; tide-mode setup function
-;; (defun setup-tide-mode ()
-;;   (interactive)
-;;   (tide-setup)
-;;   (flycheck-mode +1)
-;;   (setq flycheck-check-syntax-automatically '(save mode-enabled))
-;;   (eldoc-mode +1)
-;;   (tide-hl-identifier-mode +1)
-;;   ;; company is an optional dependency. You have to
-;;   ;; install it separately via package-install
-;;   ;; `M-x package-install [ret] company`
-;;   (company-mode +1))
 
 (defun duplicate-line()
   (interactive)

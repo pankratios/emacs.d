@@ -47,7 +47,6 @@
   (package-refresh-contents)
   (package-install 'use-package))
 
-(require 'diminish)
 (require 'bind-key)
 
 ;; Customization
@@ -118,8 +117,10 @@
 
 (add-to-list 'initial-frame-alist '(fullscreen . maximized))
 
-(add-to-list 'custom-theme-load-path "~/.emacs.d/themes/")
-(load-theme 'solarized t)
+(use-package solarized-theme
+  :ensure color-theme-solarized
+  :config
+  (load-theme 'solarized t))
 
 ;; utf-8 all the things
 (set-terminal-coding-system 'utf-8)
@@ -144,6 +145,9 @@
       auto-save-file-name-transforms `((".*" ,temporary-file-directory t)))
 
 (server-start) ;; Allow this Emacs process to be a server for client processes.
+
+(use-package diminish
+  :ensure t)
 
 (use-package page-break-lines           ; Turn page breaks into lines
   :ensure t

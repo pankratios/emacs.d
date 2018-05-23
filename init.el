@@ -382,7 +382,8 @@
 
 (use-package add-node-modules-path
   :ensure t
-  :hook (typescript-mode flycheck-mode))
+  :hook (typescript-mode)
+  )
 
 (use-package prettier-js
   :ensure t
@@ -658,8 +659,7 @@ Has no effect when `persp-show-modestring' is nil."
 (use-package flycheck
   :ensure t
   :defer 5
-  :config
-  (global-flycheck-mode 1)
+  :init (global-flycheck-mode)
   :diminish (flycheck-mode))
 
 (use-package drag-stuff

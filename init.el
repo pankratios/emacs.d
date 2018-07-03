@@ -779,42 +779,33 @@ Has no effect when `persp-show-modestring' is nil."
   :bind (:map csharp-mode-map
               ("C-d" . windmove-right)
               ("M-j" . backward-char))
-  :config (unbind-key "M-a" csharp-mode-map))
+  :config (
+           progn
+            (unbind-key "M-a" csharp-mode-map)
+            (setq indent-tabs-mode nil)
+            (setq c-syntactic-indentation t)
+            ;; (c-set-style "ellemtel")
+            (setq c-basic-offset 2)
+            (setq truncate-lines t)
+            (setq tab-width 2)
+            (setq evil-shift-width 2)
+            (setq electric-pair-mode 1)))
 
 (use-package omnisharp
   :ensure t
   :bind (:map omnisharp-mode-map
-              ("M-." . omnisharp-go-to-definition))
+              ("M-." . omnisharp-go-to-definition)
+              ("C-c i" . omnisharp-code-format-entire-file)
+              ("M-RET" . omnisharp-run-code-action-refactoring))
   :config (progn
             (setq omnisharp-server-executable-path "/usr/local/bin/omnisharp")
             (add-to-list 'company-backends 'company-omnisharp))
   :hook ((csharp-mode . omnisharp-mode)
          (csharp-mode . company-mode)
          (csharp-mode . flycheck-mode)
-         ;; (csharp-mode . setup-csharp-mode)
-         )
+         (before-save . omnisharp-code-format-entire-file))
   :after (csharp-mode company flycheck)
   )
-
-;; (defun setup-csharp-mode ()
-;;   (omnisharp-mode)
-;;   (company-mode)
-;;   (flycheck-mode)
-
-;;   (setq indent-tabs-mode nil)
-;;   (setq c-syntactic-indentation t)
-;;   (c-set-style "ellemtel")
-;;   (setq c-basic-offset 4)
-;;   (setq truncate-lines t)
-;;   (setq tab-width 4)
-;;   (setq evil-shift-width 4)
-
-;;                                         ;csharp-mode README.md recommends this too
-;;                                         ;(electric-pair-mode 1)       ;; Emacs 24
-;;   (electric-pair-local-mode 1) ;; Emacs 25
-
-;;   (local-set-key (kbd "C-c r r") 'omnisharp-run-code-action-refactoring)
-;;   (local-set-key (kbd "C-c C-c") 'recompile))
 
 (provide 'init)
 

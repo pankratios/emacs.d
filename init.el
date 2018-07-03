@@ -410,11 +410,13 @@
   :bind (("C-p s" . projectile-persp-switch-project))
   :config
   (persp-mode)
-  (defun persp-format-name (name)
-    "Format the perspective name given by NAME for display in `persp-modestring'."
-    (let ((string-name (format "%s" name)))
-      (if (equal name (persp-name persp-curr))
-          (propertize string-name 'face 'persp-selected-face))))
+  ;; 11.06.2018 After updating packages persp-curr symbol is not available
+  ;; (defun persp-format-name (name)
+  ;;   "Format the perspective name given by NAME for display in `persp-modestring'."
+  ;;   (when persp-curr
+  ;;     (let ((string-name (format "%s" name)))
+  ;;       (if (equal name (persp-name persp-curr))
+  ;;           (propertize string-name 'face 'persp-selected-face)))))
 
   (defun persp-update-modestring ()
     "Update `persp-modestring' to reflect the current perspectives.
@@ -517,15 +519,6 @@ Has no effect when `persp-show-modestring' is nil."
   :ensure t
   :defer t
   :init (add-hook 'ruby-mode-hook 'rubocop-mode))
-
-(use-package rspec-mode
-  :ensure t
-  :defer t
-  :config (progn
-            (defun rspec-ruby-mode-hook ()
-              (tester-init-test-run #'rspec-run-single-file "_spec.rb$")
-              (tester-init-test-suite-run #'rake-test))
-            (add-hook 'enh-ruby-mode-hook 'rspec-ruby-mode-hook)))
 
 (use-package rbenv
   :ensure t

@@ -185,7 +185,7 @@
 (use-package ido
   :config
   (setq ido-enable-flex-matching t)
-  (ido-everywhere t)
+  ;; (ido-everywhere t) ;; 08.07.18 seems to be incompatible with helm https://github.com/emacs-helm/helm/issues/1819
   (ido-mode 1))
 
 (use-package hl-line
@@ -429,6 +429,7 @@ Has no effect when `persp-show-modestring' is nil."
 
 (use-package helm-projectile
   :ensure t
+  ;; prevent message "helm-projectile-on" called 2 times
   ;; :config
   ;; (helm-projectile-on)
   )
@@ -653,6 +654,7 @@ Has no effect when `persp-show-modestring' is nil."
   :ensure t
   :defer 5
   :init (global-flycheck-mode)
+  :config (setq flycheck-temp-prefix ".flycheck")
   :diminish (flycheck-mode))
 
 (use-package drag-stuff
@@ -782,6 +784,7 @@ Has no effect when `persp-show-modestring' is nil."
   :config (
            progn
             (unbind-key "M-a" csharp-mode-map)
+            (unbind-key "C-c C-k" c-mode-base-map)
             (setq indent-tabs-mode nil)
             (setq c-syntactic-indentation t)
             ;; (c-set-style "ellemtel")
@@ -796,9 +799,11 @@ Has no effect when `persp-show-modestring' is nil."
   :bind (:map omnisharp-mode-map
               ("M-." . omnisharp-go-to-definition)
               ("C-c i" . omnisharp-code-format-entire-file)
+              ("M-r" . omnisharp-rename)
               ("M-RET" . omnisharp-run-code-action-refactoring))
   :config (progn
             (setq omnisharp-server-executable-path "/usr/local/bin/omnisharp")
+            ;; (setq omnisharp-debug t)
             (add-to-list 'company-backends 'company-omnisharp))
   :hook ((csharp-mode . omnisharp-mode)
          (csharp-mode . company-mode)

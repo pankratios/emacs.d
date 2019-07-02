@@ -235,9 +235,9 @@
   :ensure t
   :commands (ag ag-regexp ag-project))
 
-(use-package tester
-  :load-path "~/Projects/tester.el"
-  :commands (tester-run-test-file tester-run-test-suite))
+;; (use-package tester
+;;   :load-path "~/Projects/tester.el"
+;;   :commands (tester-run-test-file tester-run-test-suite))
 
 (use-package helm
   :ensure t
@@ -696,10 +696,13 @@ Has no effect when `persp-show-modestring' is nil."
                   ;; setq web-mode-style-padding 2
                   ;; setq web-mode-script-padding 2
                   )
-            (add-hook 'web-mode-hook
-                      (lambda ()
-                        (when (string-equal "tsx" (file-name-extension buffer-file-name))
-                          (setup-tide-mode))))))
+            (add-hook 'web-mode-hook (lambda ()
+                                       (when (string-equal "tsx" (file-name-extension buffer-file-name))
+                                         (setup-tide-mode-for-tsx))))
+            (flycheck-add-mode 'javascript-eslint 'web-mode)
+            (flycheck-add-next-checker 'javascript-eslint 'jsx-tide 'append)
+            )
+  )
 
 (use-package shader-mode
   :ensure t
@@ -758,23 +761,37 @@ Has no effect when `persp-show-modestring' is nil."
               ("M-r" . tide-rename-symbol)
               ("M-p" . tide-references)
               ("M-'" . tide-documentation-at-point)
-              ("M-e" . company-tide)
+              ("M-RET" . company-tide)
               ("M-n" . company-yasnippet))
   :config (progn
             (
              setq company-tooltip-align-annotations t
-                  tide-format-options '(:insertSpaceAfterFunctionKeywordForAnonymousFunctions t :placeOpenBraceOnNewLineForFunctions nil)))
-  :hook (
-         ;; overrides prettier-js formatting (before-save . tide-format-before-save)
-         (typescript-mode . (lambda()
-                              (flycheck-mode +1)
-                              (setq flycheck-check-syntax-automatically '(save mode-enabled))
-                              (tide-setup)
-                              (eldoc-mode +1)
-                              (tide-hl-identifier-mode +1)
-                              (company-mode +1))))
-  :after (company typescript-mode)
-  )
+                  tide-format-options '(:insertSpaceAfterFunctionKeywordForAnonymousFunctions t :placeOpenBraceOnNewLineForFunctions nil))
+            (flycheck-add-next-checker 'typescript-tide '(warning . javascript-eslint) 'append)
+            )
+  :after (typescript-mode company flycheck)
+  :hook ((typescript-mode . tide-setup)
+         (typescript-mode . tide-hl-identifier-mode)
+         ;; (before-save . tide-format-before-save))
+  ;; :hook (
+  ;;        ;; overrides prettier-js formatting (before-save . tide-format-before-save)
+  ;;        (typescript-mode . (lambda()
+  ;;                             (flycheck-mode +1)
+  ;;                             (setq flycheck-check-syntax-automatically '(save mode-enabled))
+  ;;                             (tide-setup)
+  ;;                             (eldoc-mode +1)
+  ;;                             (tide-hl-identifier-mode +1)
+  ;;                             (company-mode +1))))
+  ))
+
+(use-package elpy
+  :ensure t
+  :init
+  (elpy-enable)
+  :config(
+          progn
+          (setq elpy-rpc-python-command "python3")
+          ))
 
 (use-package csharp-mode
   :ensure t
@@ -783,16 +800,16 @@ Has no effect when `persp-show-modestring' is nil."
               ("M-j" . backward-char))
   :config (
            progn
-            (unbind-key "M-a" csharp-mode-map)
-            (unbind-key "C-c C-k" c-mode-base-map)
-            (setq indent-tabs-mode nil)
-            (setq c-syntactic-indentation t)
-            ;; (c-set-style "ellemtel")
-            (setq c-basic-offset 2)
-            (setq truncate-lines t)
-            (setq tab-width 2)
-            (setq evil-shift-width 2)
-            (setq electric-pair-mode 1)))
+           (unbind-key "M-a" csharp-mode-map)
+           (unbind-key "C-c C-k" c-mode-base-map)
+           (setq indent-tabs-mode nil)
+           (setq c-syntactic-indentation t)
+           ;; (c-set-style "ellemtel")
+           (setq c-basic-offset 2)
+           (setq truncate-lines t)
+           (setq tab-width 2)
+           (setq evil-shift-width 2)
+           (setq electric-pair-mode 1)))
 
 (use-package omnisharp
   :ensure t

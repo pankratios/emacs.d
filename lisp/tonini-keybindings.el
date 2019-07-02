@@ -156,7 +156,7 @@
 
 ;; Test bindings
 
-(global-set-key (kbd "M-e") 'tester-run-test-file)
+;; (global-set-key (kbd "M-e") 'tester-run-test-file)
 
 ;; Helm
 (global-set-key (kbd "M-a") 'helm-M-x)

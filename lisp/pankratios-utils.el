@@ -30,5 +30,20 @@
   (yank)
   )
 
+;; code is from tide wiki but this method is only for the web-mode tsx hook
+;; for normal typescript projects "use-package" is used
+;; (require 'flycheck)
+(defun setup-tide-mode-for-tsx ()
+  (interactive)
+  (tide-setup)
+  (flycheck-mode +1)
+  (setq flycheck-check-syntax-automatically '(save mode-enabled))
+  (eldoc-mode +1)
+  (tide-hl-identifier-mode +1)
+  ;; company is an optional dependency. You have to
+  ;; install it separately via package-install
+  ;; `M-x package-install [ret] company`
+  (company-mode +1))
+
 (provide 'pankratios-utils)
 ;;; pankratios-utils.el ends here

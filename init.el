@@ -395,7 +395,6 @@
   :config
   (setq projectile-completion-system 'helm)
   (projectile-global-mode)
-  (helm-projectile-on)
   (setq projectile-enable-caching nil)
   :diminish (projectile-mode))
 

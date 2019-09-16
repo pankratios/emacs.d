@@ -8,7 +8,8 @@ backup.*
 org-clock-save.el
 ac-comphist.dat
 tramp
-elpa
+elpa/
+elpa_backup*/
 var
 eshell
 ido.last
@@ -20,5 +21,9 @@ url
 auto-save-list
 projectile-bookmarks.eld
 projectile.cache
-tutorial/*
+tutorial/
 .mc-lists.el
+transient/
+
+#omnisharp
+.cache/

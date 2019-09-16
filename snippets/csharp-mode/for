@@ -1,0 +1,7 @@
+# key: for
+# contributor: Roger Meier <rom0130@gmail.com>
+# name: for
+# --
+for (${1:Initializer}; ${2:Condition}; ${3:Update}) {
+  $0
+}

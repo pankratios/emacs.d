@@ -1,0 +1,11 @@
+# key: tcf
+# contributor: Roger Meier <rom0130@gmail.com>
+# name: Try Catch Finally
+# --
+try {
+  $1
+} catch (${2:Exception} ${3:e}) {
+  $4
+} finally {
+  $0
+}

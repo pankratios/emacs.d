@@ -1,0 +1,7 @@
+# key: if
+# contributor: Roger Meier <rom0130@gmail.com>
+# name: If
+# --
+if (${1:Condition}) {
+  $0
+}

@@ -1,0 +1,7 @@
+# key: ctor
+# contributor: Roger Meier <rom0130@gmail.com>
+# name: Constructor with name generated from filename
+# --
+public `(file-name-nondirectory (file-name-sans-extension (buffer-file-name)))`() {
+  $0
+}

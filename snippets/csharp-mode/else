@@ -1,0 +1,7 @@
+# key: else
+# contributor: Roger Meier <rom0130@gmail.com>
+# name: else
+# --
+else {
+  $0
+}

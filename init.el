@@ -28,7 +28,7 @@
 ;;; Code:
 
 ;; Activate? debugger on error
-;; (setq debug-on-error t)
+;;(setq debug-on-error t)
 
 ;; Debugging
 (setq message-log-max 10000)
@@ -699,7 +699,7 @@ Has no effect when `persp-show-modestring' is nil."
                                        (when (string-equal "tsx" (file-name-extension buffer-file-name))
                                          (setup-tide-mode-for-tsx))))
             (flycheck-add-mode 'javascript-eslint 'web-mode)
-            (flycheck-add-next-checker 'javascript-eslint 'jsx-tide 'append)
+            ;;(flycheck-add-next-checker 'javascript-eslint 'jsx-tide 'append)
             )
   )
 
@@ -797,6 +797,7 @@ Has no effect when `persp-show-modestring' is nil."
   :bind (:map csharp-mode-map
               ("C-d" . windmove-right)
               ("M-j" . backward-char))
+  :hook ((csharp-mode-map . yas-minor-mode))
   :config (
            progn
            (unbind-key "M-a" csharp-mode-map)
@@ -818,7 +819,7 @@ Has no effect when `persp-show-modestring' is nil."
               ("M-r" . omnisharp-rename)
               ("M-RET" . omnisharp-run-code-action-refactoring))
   :config (progn
-            (setq omnisharp-server-executable-path "/usr/local/bin/omnisharp")
+            ;; (setq omnisharp-server-executable-path "/usr/local/bin/omnisharp")
             ;; (setq omnisharp-debug t)
             (add-to-list 'company-backends 'company-omnisharp))
   :hook ((csharp-mode . omnisharp-mode)

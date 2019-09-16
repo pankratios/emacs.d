@@ -1,0 +1,7 @@
+# key: elif
+# contributor: Roger Meier <rom0130@gmail.com>
+# name: else if { .. Condition .. }
+# --
+else if (${1:Condition}) {
+  $0
+}

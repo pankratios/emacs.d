@@ -1,0 +1,7 @@
+# key: while
+# contributor: Roger Meier <rom0130@gmail.com>
+# name: while
+# --
+while (${1:Condition}) {
+  $0
+}

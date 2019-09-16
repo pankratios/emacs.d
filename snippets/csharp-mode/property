@@ -1,0 +1,5 @@
+# key: prop
+# contributor: Roger Meier <rom0130@gmail.com>
+# name: Public property
+# --
+public ${1:string} ${2:PropertyName} { get; set; }

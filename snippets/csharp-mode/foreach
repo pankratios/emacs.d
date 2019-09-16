@@ -1,0 +1,7 @@
+# key: foreach
+# contributor: Roger Meier <rom0130@gmail.com>
+# name: foreach
+# --
+foreach (var ${1:Type} in ${2:Collection}) {
+  $0
+}

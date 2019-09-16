@@ -1,0 +1,5 @@
+# key: cw
+# contributor: Roger Meier <rom0130@gmail.com>
+# name: Console.WriteLine
+# --
+Console.WriteLine($1);$0

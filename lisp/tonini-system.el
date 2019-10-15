@@ -35,6 +35,7 @@
 
 (setq delete-old-versions t)
 (setq make-backup-files nil)
+;; Disable lockfiles otherwise these files trigger watchers (like the typescript compiler) to compile everytime a file is opened.
 (setq create-lockfiles nil)
 
 (setq auto-save-file-name-transforms
@@ -57,6 +58,6 @@
 (add-hook 'before-save-hook 'whitespace-cleanup)
 
 ;; Allow this Emacs process to be a server for client processes.
-(server-start)
+;; (server-start)
 
 (provide 'tonini-system)

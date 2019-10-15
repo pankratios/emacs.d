@@ -27,8 +27,8 @@
 (set-frame-parameter nil 'fullscreen 'fullboth)
 (setq default-cursor-type 'box)
 
-(add-to-list 'custom-theme-load-path "~/.emacs.d/themes/")
-(load-theme 'ujelly t)
+;; (add-to-list 'custom-theme-load-path "~/.emacs.d/themes/")
+;; (load-theme 'ujelly t)
 
 (defvar mode-line-cleaner-alist
   `((eldoc-mode . "")

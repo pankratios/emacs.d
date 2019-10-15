@@ -5,7 +5,5 @@
 
 ;;; Code:
 
-(global-set-key (kbd "M-RET") 'duplicate-line)
-
 (provide 'pankratios-keybindings)
 ;;; pankratios-keybindings.el ends here

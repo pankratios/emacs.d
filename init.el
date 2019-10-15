@@ -28,7 +28,7 @@
 ;;; Code:
 
 ;; Activate? debugger on error
-;;(setq debug-on-error t)
+(setq debug-on-error t)
 
 ;; Debugging
 (setq message-log-max 10000)
@@ -99,7 +99,7 @@
       echo-keystrokes 0.1
       linum-format " %d"
       initial-scratch-message "Welcom on LV-426 ...be careful!:-D\n")
-(fset 'yes-or-no-p #'y-or-n-p)
+
 ;; Opt out from the startup message in the echo area by simply disabling this
 ;; ridiculously bizarre thing entirely.
 (fset 'display-startup-echo-area-message #'ignore)
@@ -128,21 +128,10 @@
 (set-selection-coding-system 'utf-8)
 (prefer-coding-system 'utf-8)
 
-;; System setup
-
-;; `gc-cons-threshold'
-
-;; http://www.gnu.org/software/emacs/manual/html_node/elisp/Garbage-Collection.html
-;;
-;; I have a modern machine ;)
-;;
-(setq gc-cons-threshold 20000000)
-
 (setq delete-old-versions t
       make-backup-files nil
       create-lockfiles nil
-      ring-bell-function 'ignore
-      auto-save-file-name-transforms `((".*" ,temporary-file-directory t)))
+      ring-bell-function 'ignore)
 
 (server-start) ;; Allow this Emacs process to be a server for client processes.
 
@@ -212,7 +201,8 @@
   :config (add-hook 'css-mode-hook #'rainbow-mode)
   :diminish (rainbow-mode))
 
-(use-package company                    ; Graphical (auto-)completion
+;; Graphical (auto-)completion
+(use-package company
   :ensure t
   :init (global-company-mode)
   :config
@@ -230,6 +220,11 @@
               ("M-i" . company-select-previous)
               ("TAB" . company-complete-selection))
   :diminish company-mode)
+
+(use-package company-tern
+  :disabled t
+  :ensure t
+  :after company)
 
 (use-package ag
   :ensure t
@@ -275,8 +270,9 @@
                  (display-buffer-reuse-window display-buffer-in-side-window)
                  (reusable-frames . visible)
                  (side            . bottom)
-                 (window-height   . 0.4)))
+                 (window-height   . 0.5)))
   :diminish (helm-mode))
+
 (use-package helm-descbinds
   :ensure t
   :bind ("C-h b" . helm-descbinds))
@@ -382,12 +378,13 @@
 
 (use-package add-node-modules-path
   :ensure t
-  :hook (typescript-mode)
+  :hook (typescript-mode web-mode)
   )
 
 (use-package prettier-js
   :ensure t
-  :hook (typescript-mode . prettier-js-mode))
+  :hook ((typescript-mode . prettier-js-mode)
+         (web-mode . prettier-js-mode)))
 
 (use-package projectile
   :ensure t
@@ -395,7 +392,10 @@
   :config
   (setq projectile-completion-system 'helm)
   (projectile-global-mode)
-  (setq projectile-enable-caching nil)
+  (setq projectile-enable-caching t
+        projectile-globally-ignored-file-suffixes '("#" "~" ".swp" ".o" ".so" ".exe" ".dll" ".elc" ".pyc" ".jar")
+        projectile-globally-ignored-directories '(".git" "node_modules" "__pycache__" ".vs")
+        projectile-globally-ignored-files '("TAGS" "tags" ".DS_Store"))
   :diminish (projectile-mode))
 
 (use-package ibuffer-projectile         ; Group buffers by Projectile project
@@ -454,9 +454,7 @@ Has no effect when `persp-show-modestring' is nil."
   :defer t
   :config
   (setq yas-snippet-dirs
-        '("~/.emacs.d/snippets"
-          ;; "~/.emacs.d/elpa/yasnippet-snippets-20171001.606/snippets"
-          ))
+        '("~/.emacs.d/snippets"))
   (yas-global-mode 1)
   :diminish (yas-minor-mode . " YS"))
 
@@ -468,8 +466,8 @@ Has no effect when `persp-show-modestring' is nil."
               :map alchemist-mode-map
               ("M-w" . alchemist-goto-list-symbol-definitions))
   :config (progn
-            (setq alchemist-goto-elixir-source-dir "~/Projects/elixir/")
-            (setq alchemist-goto-erlang-source-dir "~/Projects/otp/")
+            (setq alchemist-goto-elixir-source-dir "~/Projects/elixir/"
+                  alchemist-goto-erlang-source-dir "~/Projects/otp/")
             (defun tonini-alchemist-mode-hook ()
               (tester-init-test-run #'alchemist-mix-test-file "_test.exs$")
               (tester-init-test-suite-run #'alchemist-mix-test))
@@ -495,40 +493,40 @@ Has no effect when `persp-show-modestring' is nil."
   :config
   (setq erlang-indent-level 2))
 
-(use-package enh-ruby-mode
-  :ensure t
-  :defer t
-  :mode (("\\.rb\\'"       . enh-ruby-mode)
-         ("\\.ru\\'"       . enh-ruby-mode)
-         ("\\.jbuilder\\'" . enh-ruby-mode)
-         ("\\.gemspec\\'"  . enh-ruby-mode)
-         ("\\.rake\\'"     . enh-ruby-mode)
-         ("Rakefile\\'"    . enh-ruby-mode)
-         ("Gemfile\\'"     . enh-ruby-mode)
-         ("Guardfile\\'"   . enh-ruby-mode)
-         ("Capfile\\'"     . enh-ruby-mode)
-         ("Vagrantfile\\'" . enh-ruby-mode))
-  :config (progn
-            (setq enh-ruby-indent-level 2
-                  enh-ruby-deep-indent-paren nil
-                  enh-ruby-bounce-deep-indent t
-                  enh-ruby-hanging-indent-level 2)
-            (setq ruby-insert-encoding-magic-comment nil)))
+;; (use-package enh-ruby-mode
+;;   :ensure t
+;;   :defer t
+;;   :mode (("\\.rb\\'"       . enh-ruby-mode)
+;;          ("\\.ru\\'"       . enh-ruby-mode)
+;;          ("\\.jbuilder\\'" . enh-ruby-mode)
+;;          ("\\.gemspec\\'"  . enh-ruby-mode)
+;;          ("\\.rake\\'"     . enh-ruby-mode)
+;;          ("Rakefile\\'"    . enh-ruby-mode)
+;;          ("Gemfile\\'"     . enh-ruby-mode)
+;;          ("Guardfile\\'"   . enh-ruby-mode)
+;;          ("Capfile\\'"     . enh-ruby-mode)
+;;          ("Vagrantfile\\'" . enh-ruby-mode))
+;;   :config (progn
+;;             (setq enh-ruby-indent-level 2
+;;                   enh-ruby-deep-indent-paren nil
+;;                   enh-ruby-bounce-deep-indent t
+;;                   enh-ruby-hanging-indent-level 2)
+;;             (setq ruby-insert-encoding-magic-comment nil)))
 
-(use-package rubocop
-  :ensure t
-  :defer t
-  :init (add-hook 'ruby-mode-hook 'rubocop-mode))
+;; (use-package rubocop
+;;   :ensure t
+;;   :defer t
+;;   :init (add-hook 'ruby-mode-hook 'rubocop-mode))
 
-(use-package rbenv
-  :ensure t
-  :defer t
-  :init (progn
-          (setq rbenv-show-active-ruby-in-modeline nil)
-          (global-rbenv-mode))
-  :config (progn
-            (global-rbenv-mode)
-            (add-hook 'enh-ruby-mode-hook 'rbenv-use-corresponding)))
+;; (use-package rbenv
+;;   :ensure t
+;;   :defer t
+;;   :init (progn
+;;           (setq rbenv-show-active-ruby-in-modeline nil)
+;;           (global-rbenv-mode))
+;;   :config (progn
+;;             (global-rbenv-mode)
+;;             (add-hook 'enh-ruby-mode-hook 'rbenv-use-corresponding)))
 
 (use-package f
   :ensure t)
@@ -586,9 +584,9 @@ Has no effect when `persp-show-modestring' is nil."
       (tester-init-test-suite-run #'overseer-test))
     (add-hook 'overseer-mode-hook 'test-emacs-lisp-hook)))
 
-(use-package karma
-  :ensure t
-  :init)
+;; (use-package karma
+;;   :ensure t
+;;   :init)
 
 (use-package elisp-slime-nav
   :ensure t
@@ -632,22 +630,12 @@ Has no effect when `persp-show-modestring' is nil."
   :mode (("\\.json\\'" . json-mode))
   :config (setq js-indent-level 2))
 
-(use-package typescript-mode
-  :ensure t
-  :config (setq typescript-indent-level 2))
-
 (use-package js2-refactor
   :ensure t
   :after js2-mode
-  :init
-  (add-hook 'js2-mode-hook 'js2-refactor-mode)
+  :hook (js2-mode-hook . js2-refactor-mode)
   :config
   (js2r-add-keybindings-with-prefix "C-c m r"))
-
-(use-package company-tern
-  :disabled t
-  :ensure t
-  :after company)
 
 (use-package flycheck
   :ensure t
@@ -685,6 +673,9 @@ Has no effect when `persp-show-modestring' is nil."
          ("\\.eex\\'" . web-mode)
          ("\\.php\\'" . web-mode)
          ("\\.tsx\\'" . web-mode))
+  :hook (web-mode . (lambda ()
+                           (when (string-equal "tsx" (file-name-extension buffer-file-name))
+                             (setup-tide-mode-for-tsx))))
   :config (progn
             (setq web-mode-markup-indent-offset 2
                   web-mode-css-indent-offset 2
@@ -695,9 +686,6 @@ Has no effect when `persp-show-modestring' is nil."
                   ;; setq web-mode-style-padding 2
                   ;; setq web-mode-script-padding 2
                   )
-            (add-hook 'web-mode-hook (lambda ()
-                                       (when (string-equal "tsx" (file-name-extension buffer-file-name))
-                                         (setup-tide-mode-for-tsx))))
             (flycheck-add-mode 'javascript-eslint 'web-mode)
             ;;(flycheck-add-next-checker 'javascript-eslint 'jsx-tide 'append)
             )
@@ -711,8 +699,8 @@ Has no effect when `persp-show-modestring' is nil."
 (use-package emmet-mode
   :ensure t
   :bind (:map emmet-mode-keymap
-              ("M-e" . emmet-expand-line))
-  :config (add-hook 'web-mode-hook 'emmet-mode))
+              ("C-c M-e" . emmet-expand-line))
+  :hook (web-mode . emmet-mode))
 
 (use-package sass-mode
   :ensure t)
@@ -753,6 +741,10 @@ Has no effect when `persp-show-modestring' is nil."
   :after (company dash)
   )
 
+(use-package typescript-mode
+  :ensure t
+  :config (setq typescript-indent-level 2))
+
 ;; https://www.reddit.com/r/emacs/comments/6w67te/tide_questions_regarding_usepackage/
 (use-package tide
   :ensure t
@@ -761,6 +753,7 @@ Has no effect when `persp-show-modestring' is nil."
               ("M-p" . tide-references)
               ("M-'" . tide-documentation-at-point)
               ("M-RET" . company-tide)
+              ("C-c u" . tide-organize-imports)
               ("M-n" . company-yasnippet))
   :config (progn
             (
@@ -802,25 +795,33 @@ Has no effect when `persp-show-modestring' is nil."
            progn
            (unbind-key "M-a" csharp-mode-map)
            (unbind-key "C-c C-k" c-mode-base-map)
-           (setq indent-tabs-mode nil)
-           (setq c-syntactic-indentation t)
+           (setq indent-tabs-mode nil
+                 c-syntactic-indentation t
+                 c-basic-offset 2
+                 truncate-lines t
+                 tab-width 2
+                 evil-shift-width 2
+                 electric-pair-local-mode 1)
            ;; (c-set-style "ellemtel")
-           (setq c-basic-offset 2)
-           (setq truncate-lines t)
-           (setq tab-width 2)
-           (setq evil-shift-width 2)
-           (setq electric-pair-mode 1)))
+           ))
 
 (use-package omnisharp
   :ensure t
   :bind (:map omnisharp-mode-map
               ("M-." . omnisharp-go-to-definition)
-              ("C-c i" . omnisharp-code-format-entire-file)
+              ("M-'" . omnisharp-current-type-documentation)
               ("M-r" . omnisharp-rename)
-              ("M-RET" . omnisharp-run-code-action-refactoring))
+              ("M-RET" . omnisharp-run-code-action-refactoring)
+              ("M-p" . omnisharp-find-usages)
+              ("M-S-p" . omnisharp-find-implementations)
+              ("C-c i" . omnisharp-code-format-entire-file)
+              ("C-c u" . omnisharp-fix-usings)
+              ("C-c p" . omnisharp-show-overloads-at-point))
   :config (progn
             ;; (setq omnisharp-server-executable-path "/usr/local/bin/omnisharp")
             ;; (setq omnisharp-debug t)
+            (setq omnisharp-company-ignore-case nil
+                  omnisharp-imenu-support t)
             (add-to-list 'company-backends 'company-omnisharp))
   :hook ((csharp-mode . omnisharp-mode)
          (csharp-mode . company-mode)

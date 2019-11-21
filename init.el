@@ -642,6 +642,7 @@ Has no effect when `persp-show-modestring' is nil."
   :defer 5
   :init (global-flycheck-mode)
   :config (setq flycheck-temp-prefix ".flycheck")
+  :after (setcar (memq 'source-inplace (flycheck-checker-get 'typescript-tslint 'command)) 'source-original)
   :diminish (flycheck-mode))
 
 (use-package drag-stuff

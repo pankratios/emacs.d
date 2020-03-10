@@ -392,8 +392,8 @@
   :config
   (setq projectile-completion-system 'helm)
   (projectile-global-mode)
-  (setq projectile-enable-caching t
-        projectile-globally-ignored-file-suffixes '("#" "~" ".swp" ".o" ".so" ".exe" ".dll" ".elc" ".pyc" ".jar")
+  ;;(setq projectile-enable-caching t
+  (setq projectile-globally-ignored-file-suffixes '("#" "~" ".swp" ".o" ".so" ".exe" ".dll" ".elc" ".pyc" ".jar")
         projectile-globally-ignored-directories '(".git" "node_modules" "__pycache__" ".vs")
         projectile-globally-ignored-files '("TAGS" "tags" ".DS_Store"))
   :diminish (projectile-mode))

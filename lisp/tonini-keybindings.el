@@ -24,7 +24,6 @@
 
 (global-unset-key (kbd "C-<backspace>")) ; backward-kill-word
 (global-unset-key (kbd "M-d")) ; kill-word
-
 (global-unset-key (kbd "C-d")) ; delete-char
 (global-set-key (kbd "M-d") 'delete-backward-char)
 (global-set-key (kbd "M-f") 'delete-char)
@@ -44,7 +43,6 @@
 (global-set-key (kbd "M-3") 'split-window-horizontally)
 (global-set-key (kbd "M-4") 'balance-windows)
 (global-set-key (kbd "M-9") 'delete-other-windows)
-(global-set-key (kbd "M-+") 'balance-windows)
 
 ;; Zoom-Window
 (global-set-key (kbd "M-1") 'zoom-window-zoom)
